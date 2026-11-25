@@ -86,18 +86,19 @@ if page == "Tra cứu điểm thi":
                     st.write(f"{to_hop} : {diem_thi}")
                     diem_cao.update({to_hop : diem_thi})
             st.divider()
-            st.header("Xếp hạng")
-            
-            st.selectbox("Chọn tổ hợp để xem xếp loại dựa vào các tổ hợp có điểm cao nhất", diem_cao.keys())
-            sub_combo = processor.get_combo_data(combo_name)
-            # tong = sub_combo.loc[sub_combo["sbd"] == sbd_clean, "tong_diem"].iloc[0]
-            # hang_ca_nuoc = (sub_combo["tong_diem"] > tong).sum() + 1
-            # sub_tinh = sub_combo[sub_combo["ten_tinh"] == r["ten_tinh"]]
-            # hang_tinh = (sub_tinh["tong_diem"] > tong).sum() + 1
-            # st.write(f"**{combo_name}**: {tong:.2f} điểm")
-            # c1, c2 = st.columns(2)
-            # c1.metric("Hạng cả nước", f"{hang_ca_nuoc:,} / {len(sub_combo):,}")
-            # c2.metric(f"Hạng tại {r['ten_tinh']}", f"{hang_tinh:,} / {len(sub_tinh):,}")
+            st.header("Xếp hạng theo tổ hợp")
+            for selected_combo, diem_so in diem_cao.items():
+                sub_combo = processor.get_combo_data(selected_combo)
+                tong = sub_combo.loc[sub_combo["sbd"] == sbd_clean, "tong_diem"].iloc[0]
+                hang_ca_nuoc = (sub_combo["tong_diem"] > tong).sum() + 1
+
+                sub_tinh = sub_combo[sub_combo["ten_tinh"] == r["ten_tinh"]]
+                hang_tinh = (sub_tinh["tong_diem"] > tong).sum() + 1
+
+                st.write(f"Tổ hợp {selected_combo} ({diem_so} điểm)")
+                c1, c2 = st.columns(2)
+                c1.metric("Hạng cả nước", f"{hang_ca_nuoc:,} / {len(sub_combo):,}")
+                c2.metric(f"Hạng tại {r['ten_tinh']}", f"{hang_tinh:,} / {len(sub_tinh):,}")
             
 elif page == "AI Cố vấn & Phân tích":
     st.header("AI Cố vấn: Dự đoán khả năng đạt mốc 24+ điểm")
